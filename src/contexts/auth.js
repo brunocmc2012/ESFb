@@ -7,7 +7,7 @@ const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     function loadStorage() {
-      const storageUser = localStorage.getItem("AuthFaceClone");
+      const storageUser = localStorage.getItem("AuthFaceId");
 
       if (storageUser) {
         setUser(JSON.parse(storageUser));
@@ -25,11 +25,11 @@ const AuthProvider = ({ children }) => {
     };
 
     setUser(data);
-    localStorage.setItem("AuthFaceClone", JSON.stringify(data));
+    localStorage.setItem("AuthFaceId", JSON.stringify(data));
   };
 
   async function signOut() {
-    localStorage.removeItem("AuthFaceClone");
+    localStorage.removeItem("AuthFaceId");
 
     setUser(null);
   }

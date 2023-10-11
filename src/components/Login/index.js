@@ -13,7 +13,7 @@ const Login = () => {
       <C.Container>
         <SiFacebook />
         <FacebookLogin
-          appId=""
+          appId="731167498839826"
           fields="name,email,picture"
           callback={signInWithFacebook}
         />
