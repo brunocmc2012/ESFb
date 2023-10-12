@@ -1,4 +1,6 @@
 import { createContext, useEffect, useState } from "react";
+import { auth } from '../firebase';
+import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 
 export const AuthContext = createContext({});
 
@@ -6,39 +8,66 @@ const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    function loadStorage() {
-      const storageUser = localStorage.getItem("AuthFaceId");
+    const unsubscribe = auth.onAuthStateChanged(user => {
+      if (user) {
+        const { displayName, photoURL, uid } = user
 
-      if (storageUser) {
-        setUser(JSON.parse(storageUser));
+        if (!displayName || !photoURL) {
+          throw new Error('Missing information from Google Account.')
+        }
+
+        setUser({
+          id: uid,
+          name: displayName,
+          avatar: photoURL
+        })
       }
+    })
+
+    return () => {
+      unsubscribe();
     }
+  }, [])
 
-    loadStorage();
-  }, []);
+  async function signInWithGoogle() {
+    const provider = new GoogleAuthProvider();
 
-  const signInWithFacebook = (res) => {
-    let data = {
-      name: res.name,
-      email: res.email,
-      avatarUrl: res.picture.data.url,
-    };
+    signInWithPopup(auth, provider)
+      .then((result) => {
+        const credential = GoogleAuthProvider.credentialFromResult(result);
+        const token = credential.accessToken;
 
-    setUser(data);
-    localStorage.setItem("AuthFaceId", JSON.stringify(data));
-  };
+        const user = result.user;
 
-  async function signOut() {
-    localStorage.removeItem("AuthFaceId");
+        if (user) {
+          const { displayName, photoURL, uid } = result.user
 
-    setUser(null);
+          if (!displayName || !photoURL) {
+            throw new Error('Missing information from Google Account.')
+          }
+
+          setUser({
+            id: uid,
+            name: displayName,
+            avatar: photoURL
+          })
+        }
+
+      }).catch((error) => {
+
+        const errorCode = error.code;
+        const errorMessage = error.message;
+
+        const email = error.customData.email;
+
+        const credential = GoogleAuthProvider.credentialFromError(error);
+      });
   }
 
   return (
     <AuthContext.Provider
       value={{
-        signInWithFacebook,
-        signOut,
+        signInWithGoogle,
         user,
       }}
     >

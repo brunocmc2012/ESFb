@@ -7,12 +7,12 @@ import Post from "../Post";
 const Posts = () => {
   const { user } = useContext(AuthContext);
 
-  const [realtimePosts, error] = useCollection(
-    db.collection("posts").orderBy("timestamp", "desc")
-  );
+  // const [realtimePosts, error] = useCollection(
+  //   db.collection("posts").orderBy("timestamp", "desc")
+  // );
   return (
     <>
-      {!error &&
+      {/* {!error &&
         realtimePosts.docs.map((post) => (
           <Post
             key={post.id}
@@ -22,7 +22,8 @@ const Posts = () => {
             image={user.avatarUrl}
             filePost={post.data().filePost}
           />
-        ))}
+        ))} */}
+      oi
     </>
   );
 };
