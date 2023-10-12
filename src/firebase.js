@@ -1,6 +1,7 @@
-import firebase from "firebase/compat/app";
-import "firebase/compat/firestore";
-import "firebase/compat/storage";
+import { initializeApp } from "firebase/app";
+import { getAuth } from 'firebase/auth';
+import { getFirestore } from "firebase/firestore";
+import { getStorage } from "firebase/storage";
 
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional (Esse é meu db.firebase pessoal. Usar config.firebase já criada no projeto no lugar dessa!)
 const firebaseConfig = {
@@ -12,9 +13,11 @@ const firebaseConfig = {
   appId: "1:195277464453:web:090de1beaad39d62175aec"
 };
 
-const app = firebase.initializeApp(firebaseConfig);
+const app = initializeApp(firebaseConfig);
 
-const db = app.firestore();
-const storage = firebase.storage();
+// Obtenção das instâncias do Auth, Firestore e Storage
+const auth = getAuth(app);
+const db = getFirestore(app);
+const storage = getStorage(app);
 
-export { db, storage };
+export { db, storage, auth };
